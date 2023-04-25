@@ -19,4 +19,4 @@ jobs:
         uses: romeovs/lcov-reporter-action@v0.2.16
         with:
           lcov-file: ./coverage/lcov/ruby-simplecov.lcov
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: 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
