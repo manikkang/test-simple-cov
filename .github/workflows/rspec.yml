@@ -1,22 +1,35 @@
-name: Run RSpec tests
-on: [pull_request]
+# We can dogfood the Github action but using it within our own Github action
+# for this repository
+name: Testing
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - main
 jobs:
-  run-rspec-tests:
+  rspec:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Ruby
+
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          # Not needed with a .ruby-version file
           ruby-version: 3.1.2
-          # runs 'bundle install' and caches installed gems automatically
+          bundler: default
           bundler-cache: true
+
       - name: Run tests
         run: |
-          bundle exec rspec
-      - name: Check Code coverage
-        uses: joshmfrankel/simplecov-check-action@1.0.0
+          bundle exec rspec specs/
+
+      # Using the current repo to perform coverage analysis
+      - uses: joshmfrankel/simplecov-check-action@main
         with:
-          minimum_coverage: 85
+          minimum_suite_coverage: 85
+          minimum_file_coverage: 70
           github_token: ${{ secrets.GITHUB_TOKEN }}
